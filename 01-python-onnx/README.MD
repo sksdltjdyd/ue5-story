@@ -26,15 +26,15 @@
 1. 아나콘다 프롬프트(anaconda prompt) 열기
 2. 프롬프트 창 맨 앞에 (base)라고 작성되어 있는지 확인(이게 기본)
 3. 가상환경 생성: AI 개발용 가상 환경 생성
-conda create -n ai_study python=3.10 -y
-- ai_study라는 이름의 방(-n ai_study)을 만들고, 거기에 파이썬 3.10 버전(python=3.10)을 설치
-- -y를 선택하면 알아서 설치
+    - conda create -n ai_study python=3.10 -y
+    - ai_study라는 이름의 방(-n ai_study)을 만들고, 거기에 파이썬 3.10 버전(python=3.10)을 설치
+    - -y를 선택하면 알아서 설치
 4. vs code 켜기
 5. 화면에서 VS Code 화면에서 키보드의 Ctrl + Shift + P 를 동시에 입력
 6. 그 검색창에 Python: Select Interpreter 라고 치고 엔터
 7. 우리가 아까 만든 ai_study 라는 이름과 conda 라는 글자가 같이 적혀 있는 줄을 찾아서 마우스로 클릭 (예시 : Python 3.10.x ('ai_study': conda))
 8. 성공 확인:
-- 키보드의 Ctrl + Shift + ` 입력
-- 화면 아래쪽에 까만 창(터미널)이 열림
-- 까만 창에 글씨가 뜰 텐데, 맨 앞에 (ai_study) 라고 적혀 있다면 연결 성공
+    - 키보드의 Ctrl + Shift + ` 입력
+    - 화면 아래쪽에 까만 창(터미널)이 열림
+    - 까만 창에 글씨가 뜰 텐데, 맨 앞에 (ai_study) 라고 적혀 있다면 연결 성공
 9. 이제 VS Code에서 파이썬 파일(.py)을 만들고 코드를 짜면, 컴퓨터는 자동으로 아나콘다의 ai_study 방에 있는 파이썬을 불러와서 일을 처리함. 언제든 새로운 방을 만들면 2단계 방법(Ctrl+Shift+P)을 써서 방을 이리저리 옮겨 다니며 코딩 가능
