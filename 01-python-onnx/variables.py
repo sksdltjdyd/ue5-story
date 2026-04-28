@@ -38,3 +38,21 @@ h.append(6) # add element to end of list
 print(h)
 h.sort(reverse=True) # sort list in reverse order
 print(h)
+
+dic = {"name": "Lee", "age": 30, "city": "Seoul"}
+print(dic)
+print(dic["name"])
+
+dic["job"] = "Engineer" # add new key-value pair
+print(dic)
+del dic["age"] # delete key-value pair
+print(dic)
+print(dic.get("job")) # get value of "job" key, returns None if key does not exist
+print(dic.get("age", "Not found")) # get value of "age" key
+print(dic.keys()) # get all keys
+print(dic.values()) # get all values
+print(dic.items()) # get all key-value pairs
+print("name" in dic) # check if "name" key existsp
+print("age" in dic) # check if "age" key exists
+dic.clear() # clear all key-value pairs
+print(dic) # clear() returns None
