@@ -42,3 +42,18 @@ while True:
         print("wrong number")
 
 print ("program end")
+
+a= 0
+while a < 10:
+    a += 1
+    if a % 2 == 0:
+        continue
+    print(a)
+
+test_list = [1, 2, 3, 4, 5]
+for i in test_list:
+    print(i)
+
+a = [(1, 2), (3, 4), (5, 6)]
+for (i, k) in a:
+    print(i + k)
