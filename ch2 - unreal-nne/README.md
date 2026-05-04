@@ -56,5 +56,5 @@
     - vector : 여러개의 값을 가진 1차원 데이터
     - matrix : 행렬, 행과 열로 이루어진 2차원 데이터
     - tensor : n차원의 행렬 형태로 표현
-https://miro.medium.com/1*0pRV1-1uNUxLmlvooreVpw.png
+    - 자료 이미지 : https://miro.medium.com/1*0pRV1-1uNUxLmlvooreVpw.png
 ---
