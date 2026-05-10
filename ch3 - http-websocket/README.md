@@ -28,3 +28,24 @@
 | **NNE Runtime** | 게임을 CPU로 돌릴지 그래픽카드로 돌릴지 런처에서 고르기 | `UNNEModelData`를 기반으로 CPU(Ort) 또는 GPU(DirectML) 추론 인터페이스 생성 |
 | **Data Flatten** | 3단 도시락통을 해체해서 한 줄로 늘어놓기 | `TArray`의 1차원 특성에 맞춰 텐서를 `view(-1)` 또는 `flatten()`으로 평탄화하여 메모리 복사 |
 ---
+
+> 💡NNE 활성화를 위한 언리얼 설정
+> 
+1. 에디터 설정: NNE 플러그인 활성화 (엔진에 통역사 채용하기)
+- 언리얼 엔진은 기본적으로 무거워지는 것을 막기 위해 NNE 기능이 꺼져 있다
+- 상단 메뉴 Edit(편집) > Plugins(플러그인) > NNE" (Neural Network Engine)를 검색해서 체크
+- 주의점: NNE 관련 플러그인은 아직 '베타(Beta)'나 '실험단계(Experimental)'일 수 있다. 경고창이 뜨더라도 과감하게 Yes를 누르고 엔진을 재시작(Restart)
+2. C++ 설정: Build.cs 모듈 추가 (코드에 통역사 초대하기)
+- 에디터에서 켰다고 끝이 아니다. 우리가 작성할 C++ 코드가 NNE 기능(클래스나 함수)을 가져다 쓰려면, 프로젝트의 건축 설계도 격인 Build.cs 파일에 나 NNE 쓸 거야! 라고 명시해야 함(HTTP 통신 때도 똑같이 적용되는 중요한 개념)
+- (프로젝트명).Build.cs 파일 -> PublicDependencyModuleNames 목록에 "NNE"를 추가
+'''
+C#
+// 예시
+PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "NNE" });
+주의점: 이걸 빼먹으면 C++ 코드 상단에 #include "NNE.h"를 적는 순간 지옥의 컴파일 에러(LNK2019 - 확인할 수 없는 외부 참조)를 맛보게 됩니다.
+'''
+3. 에셋 호환성: ONNX 버전 맞추기 (통역사가 읽을 수 있는 책갈피 쓰기)
+- 아무리 세팅을 잘해도 가져오는 ONNX 파일의 버전이 언리얼과 안 맞으면 엔진이 파일을 사용 불가
+- 2주 차에 PyTorch에서 ONNX로 모델을 뽑아낼(Export) 때 썼던 opset_version=14 파라미터를 사용하여 FBX 버전 맞추듯 언리얼 호환성(NNE)을 맞춰야 함
+- 현재 언리얼 NNE가 완벽하게 지원하는 ONNX Opset 버전을 확인하고 그에 맞춰서 내보내는 것이 중요
+---
