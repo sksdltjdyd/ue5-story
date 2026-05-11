@@ -49,3 +49,52 @@ PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engi
 - 2주 차에 PyTorch에서 ONNX로 모델을 뽑아낼(Export) 때 썼던 opset_version=14 파라미터를 사용하여 FBX 버전 맞추듯 언리얼 호환성(NNE)을 맞춰야 함
 - 현재 언리얼 NNE가 완벽하게 지원하는 ONNX Opset 버전을 확인하고 그에 맞춰서 내보내는 것이 중요
 ---
+
+> 💡언리얼 버전이 지원하는 Opset 버전 확인
+> 
+1. 언리얼 엔진 공식 문서 (UE Documentation)
+- 에픽게임즈 개발자 포털(dev.epicgames.com)에서 Neural Network Engine 또는 NNE를 검색
+- 문서 내의 Supported Models (지원되는 모델) 또는 ONNX Runtime 섹션을 보면, 현재 엔진 버전(예: UE 5.3, UE 5.4 등)에서 테스트를 마친 권장 Opset 버전이 명시
+2. 엔진 내장 ONNX Runtime 버전 역추적 (고급 엔지니어 방식)
+- 엔진 설치 폴더의 플러그인 소스 코드: (Engine/Plugins/Experimental/NNE/Source/ThirdParty/...)를 뜯어보면, 현재 언리얼이 내장하고 있는 ONNX Runtime의 버전(예: 1.15.1 등)을 확인 가능
+- 해당 ONNX Runtime 버전을 구글에 검색하여, ONNX 공식 깃허브의 '버전 호환성 표(Compatibility Matrix)'를 대조해 보면 몇 번 Opset까지 지원하는지 정확히 알 수 있다
+---
+
+> 💡NNE 프로젝트 세팅 가이드
+> 
+1. Edit(편집) > Plugins(플러그인) 메뉴에서 "NNE"를 검색
+- Neural Network Engine 플러그인을 체크(Enable)
+- 플러그인이 'Experimental(실험단계)'이라서 경고창이 뜰 수 있지만, "Yes"를 누르고 엔진을 재시작(Restart)
+2. C++ 설정: Build.cs 모듈 추가
+- 프로젝트 폴더 내 Source/(프로젝트이름)/(프로젝트이름).Build.cs에서 PublicDependencyModuleNames 목록에 "NNE"를 추가
+'''
+PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "NNE" });
+'''
+3. ONNX 호환성 확인: Opset 버전
+- PyTorch에서 모델을 내보낼 때 opset_version=14를 사용했는지 확인
+- NNE는 최신 FBX 버전을 맞춰야 언리얼이 읽을 수 있는 것처럼, 특정 Opset 버전을 기준으로 작동하기 때문
+4. NNE 런타임 환경 이해
+- CPU 런타임 (NNEModelRuntimeORT): 호환성이 가장 좋고 안정적
+- GPU 런타임 (NNEModelRuntimeDML): 그래픽 카드를 사용하여 속도가 매우 빠르지만, 특정 하드웨어 설정이 필요
+---
+
+> 💡NNE Runtime 설정 가이드
+> 
+- 언리얼 엔진 내에서 CPU와 GPU 런타임 설정은 프로젝트 세팅 창에서 스위치 하나로 띡 켜고 끄는 방식이 아님
+- 런타임은 어떤 플러그인을 활성화했는지와 코드(또는 블루프린트)에서 어떤 런타임을 호출하는지에 따라 개별적으로 결정
+1. 플러그인(Plugins) 창에서 런타임 모듈 확인하기
+- Edit > Plugins 창에서 "NNE"를 검색
+- 기본 Neural Network Engine 외에 아래와 같은 런타임 플러그인들이 있는지 확인하고 체크(Enable)
+- NNERuntimeORTCpu: CPU를 사용해 모델을 돌리기 위한 런타임 (안정성 최상)
+- NNERuntimeORTDml: DirectML을 이용해 GPU 가속으로 모델을 돌리기 위한 런타임 (속도 최상)
+2. 에셋(UAsset) 더블클릭해서 지원 여부 확인하기
+- 생성된 에셋을 더블클릭
+- 디테일(Details) 패널에 Supported Runtimes(지원되는 런타임)라는 항목 확인
+- 모델의 구조나 호환성에 따라 엔진이 "이 모델은 NNERuntimeORTCpu로 돌릴 수 있음", "NNERuntimeORTDml도 지원함" 하고 목록을 보여준다. 여기서 내가 원하는 런타임이 목록에 뜨는지 눈으로 확인하는 것이 첫 번째 디버깅
+3. C++ 코드(또는 블루프린트)에서 직접 배정
+- C++ 코드나 블루프린트에서 모델을 '생성(Create Model Instance)'할 때, "나는 이 모델을 CPU 런타임(NNERuntimeORTCpu) 인터페이스로 열겠다!"라고 엔진에게 명시적으로 이름을 문자열(String)로 넘겨주게 됨
+- 즉, 게임 내에서 A 모델은 무거우니 GPU로 돌리고, B 모델은 가벼우니 CPU로 돌리는 식으로 엔지니어가 코드 단에서 교통정리 가능
+4. NNE 런타임 환경 이해
+- CPU 런타임 (NNEModelRuntimeORT): 호환성이 가장 좋고 안정적
+- GPU 런타임 (NNEModelRuntimeDML): 그래픽 카드를 사용하여 속도가 매우 빠르지만, 특정 하드웨어 설정이 필요
+---
