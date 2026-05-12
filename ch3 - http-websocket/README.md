@@ -98,3 +98,15 @@ PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engi
 - CPU 런타임 (NNEModelRuntimeORT): 호환성이 가장 좋고 안정적
 - GPU 런타임 (NNEModelRuntimeDML): 그래픽 카드를 사용하여 속도가 매우 빠르지만, 특정 하드웨어 설정이 필요
 ---
+
+> 💡ONNX 파일 언리얼 임포트
+> 
+1. 임포트 과정의 비밀: UAsset으로 굽기 (Baking)
+- 리얼은 외부 파일 형식인 .onnx 원본을 그대로 쓰지 않는다
+- 이를 분석하여 언리얼 엔진의 메모리 관리 시스템(가비지 컬렉션 등)에 올라탈 수 있도록 UNNEModelData라는 언리얼 전용 클래스(UAsset)로 직렬화하여 베이크
+2. 에셋 검증: 디테일(Details) 패널 확인하기
+- 목록에 NNERuntimeORTCpu나 NNERuntimeORTDml이 잘 들어와 있다면, 엔진이 "이 모델은 내가 분석해 보니 CPU나 GPU 일꾼한테 시켜서 돌릴 수 있겠어!"라고 말한 상태
+3. 트러블슈팅: 에러가 나면서 임포트가 거부된다면?
+- 1~2주 차에 배웠던 파이썬 내보내기 코드를 떠올려보세요. opset_version=14 파라미터를 사용하여 FBX 버전 맞추듯 언리얼 호환성(NNE)을 맞춰야 합니다 
+- 버전이 맞지 않거나, 현재 버전의 NNE가 이해할 수 없는 특수한 AI 연산(Operator)이 모델에 포함되어 있으면 엔진이 파일을 뱉어냅니다
+---
